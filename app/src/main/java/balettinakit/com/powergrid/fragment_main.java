@@ -37,8 +37,8 @@ public class fragment_main extends Fragment {
     }
 
     public CardView getUsageChart30Days(){
-        LineChart chart = new LineChart(getActivity());
 
+        LineChart chart = new LineChart(getActivity());
         List<Entry> entries = new ArrayList<Entry>();
         entries.add(new Entry(4, 5));
         entries.add(new Entry(10, 6));
@@ -99,8 +99,8 @@ public class fragment_main extends Fragment {
     }
 
     public CardView getCurrentUsage(String usage){
-        CardView c = getDefaultCardView();
 
+        CardView c = getDefaultCardView();
         LinearLayout l = new LinearLayout(getActivity());
         l.setOrientation(LinearLayout.VERTICAL);
         TextView currentUsage = new TextView(getActivity());

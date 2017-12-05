@@ -8,27 +8,23 @@ public class device {
     private String name;
     private String state;
     private String usage;
-    private String hash;
-    private String id;
+    private String token;
 
-    public String getId() {
-        return id;
+
+    device(String name1, String state1, String condition1, String subject1) {
+        name = name1;
+        state = state1;
+        usage = condition1;
+        token = subject1;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getToken() {
+        return token;
     }
 
-   
-
-    public String getHash() {
-        return hash;
+    public void setToken(String token) {
+        this.token = token;
     }
-
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-
 
     public String getUsage() {
         return usage;
@@ -36,14 +32,6 @@ public class device {
 
     public void setUsage(String usage) {
         this.usage = usage;
-    }
-
-    device(String name1, String state1, String condition1, String subject1, String price1){
-        id = price1;
-        name = name1;
-        state = state1;
-        usage = condition1;
-        hash = subject1;
     }
 
     public String getName() {
