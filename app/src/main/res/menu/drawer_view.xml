@@ -19,7 +19,7 @@
                 <group android:checkableBehavior="single">
                     <item
                         android:id="@+id/nav_share"
-                        android:icon="@mipmap/ic_launcher"
+                        android:icon="@drawable/ic_share_white_24dp"
                         android:title="Sub item 1" />
                 </group>
             </menu>

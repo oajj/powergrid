@@ -62,6 +62,7 @@ public class fragment_main extends Fragment {
 
         LinearLayout l = new LinearLayout(getActivity());
         t.setText("Power usage");
+        t.setTextColor(getResources().getColor(R.color.colorText));
 
         t.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         t.setTextSize(30);
@@ -105,11 +106,13 @@ public class fragment_main extends Fragment {
         l.setOrientation(LinearLayout.VERTICAL);
         TextView currentUsage = new TextView(getActivity());
         currentUsage.setText("Current usage: "+usage+" /Wh");
+        currentUsage.setTextColor(getResources().getColor(R.color.colorText));
         currentUsage.setTextSize(30);
         currentUsage.setLayoutParams(getCustomParams(20, 10, 10, 10));
         c.addView(currentUsage);
         return c;
     }
+
 
     public LinearLayout.LayoutParams getDefaultCardViewParams(){
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(

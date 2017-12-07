@@ -1,5 +1,6 @@
 package balettinakit.com.powergrid;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -79,6 +80,7 @@ public class main extends AppCompatActivity {
         public void selectDrawerItem(MenuItem menuItem) {
             Fragment fragment = null;
             Class fragmentClass;
+            Boolean doTransition = true;
             switch(menuItem.getItemId()) {
                 case R.id.nav_main:
                     fragmentClass = fragment_main.class;
@@ -90,24 +92,32 @@ public class main extends AppCompatActivity {
                     fragmentClass = fragment_settings.class;
                     break;
                 case R.id.nav_share:
-                    fragmentClass = fragment_settings.class;
-                    break;
+                        fragmentClass = fragment_main.class;
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey! \nI found this cool service that reduces my electricity usage and energy bills! \nCheck it out here [link]");
+                        sendIntent.setType("text/plain");
+                        startActivity(Intent.createChooser(sendIntent, getString(R.string.send_to)));
+                        doTransition = false;
+                        break;
                 default:
                     fragmentClass = fragment_main.class;
             }
+            if(doTransition) {
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            try {
-                fragment = (Fragment) fragmentClass.newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
+                menuItem.setChecked(true);
+                setTitle(menuItem.getTitle());
             }
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-
-            menuItem.setChecked(true);
-            setTitle(menuItem.getTitle());
             mDrawer.closeDrawers();
+
         }
 
     @NonNull
