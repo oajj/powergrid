@@ -9,13 +9,22 @@ public class device {
     private String state;
     private String usage;
     private String token;
+    private Boolean active;
 
+    public Boolean getActive() {
+        return active;
+    }
 
-    device(String name1, String state1, String condition1, String subject1) {
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    device(String name1, String state1, String condition1, String subject1, Boolean active1) {
         name = name1;
         state = state1;
         usage = condition1;
         token = subject1;
+        active = active1;
     }
 
     public String getToken() {

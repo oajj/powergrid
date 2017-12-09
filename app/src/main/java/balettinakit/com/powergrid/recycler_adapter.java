@@ -9,6 +9,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -45,12 +46,13 @@ public class recycler_adapter extends RecyclerView
     }
 
     @Override
-    public void onBindViewHolder(DataObjectHolder holder, int position) {
+    public void onBindViewHolder(final DataObjectHolder holder, int position) {
         final DataObjectHolder h = holder;
         holder.name.setText(mDataset.get(position).getName());
         holder.condition.setText(mDataset.get(position).getState());
         holder.usage.setText(mDataset.get(position).getUsage());
         holder.img.setImageResource(pictureAdapter.adaptPicture(mDataset.get(position).getName()));
+        holder.active.setText(mDataset.get(position).getActive().toString());
 
         holder.btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +61,46 @@ public class recycler_adapter extends RecyclerView
                 MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.menu_dropdown, popup.getMenu());
                 popup.show();
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Boolean active;
+                        Boolean on;
+                        if(holder.active.getText().equals("active")){
+                            active = true;
+                        }else{
+                            active = false;
+                        }
+                        if(holder.condition.getText().equals("on")){
+                            on = true;
+                        }else{
+                            on = false;
+                        }
+                        switch (item.getItemId()){
+                            case R.id.menu_force_active:
+                                if(active){
+                                    holder.active.setText("inactive");
+                                }else {
+                                    holder.active.setText("active");
+                                    holder.condition.setText("on");
+                                }
+                                break;
+                            case R.id.menu_state:
+                                if(on){
+                                    holder.condition.setText("off");
+                                    holder.active.setText("inactive");
+                                }else {
+                                    holder.condition.setText("on");
+                                }
+                                break;
+                            case R.id.menu_stats:
+                                break;
+
+                        }
+                        return false;
+                    }
+                });
             }
         });
     }
@@ -90,9 +132,10 @@ public class recycler_adapter extends RecyclerView
     public static class DataObjectHolder extends RecyclerView.ViewHolder
             implements View
             .OnClickListener {
-        TextView name, condition, usage;
+        TextView name, condition, usage, active;
         ImageView img;
         ImageButton btn;
+
         public DataObjectHolder(View itemView) {
             super(itemView);
             btn = itemView.findViewById(R.id.menu_more);
@@ -100,6 +143,7 @@ public class recycler_adapter extends RecyclerView
             condition = itemView.findViewById(R.id.state);
             usage = itemView.findViewById(R.id.usage);
             img= itemView.findViewById(R.id.img);
+            active=itemView.findViewById(R.id.active);
             itemView.setOnClickListener(this);
         }
 
