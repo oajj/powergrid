@@ -46,7 +46,7 @@ public class fragment_devices extends Fragment {
             data= new ArrayList<>();
 
             try {
-                c = new Connection("10.0.2.2",1234);
+                c = new Connection(getResources().getString(R.string.host),1234);
             } catch (IOException e) {
                 e.printStackTrace();
             }

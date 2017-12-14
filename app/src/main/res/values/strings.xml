@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Powergrid</string>
+        <string name="app_name">Powergrid</string>
         <string name="drawer_open">Open navigation drawer</string>
         <string name="drawer_close">Close navigation drawer</string>
-    <string name="send_to">Send to</string>
+        <string name="send_to">Send to</string>
+        <string name="host">10.0.2.2</string>
 </resources>

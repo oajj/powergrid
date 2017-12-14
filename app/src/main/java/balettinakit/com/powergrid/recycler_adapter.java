@@ -6,7 +6,6 @@ package balettinakit.com.powergrid;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,16 +14,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class recycler_adapter extends RecyclerView
         .Adapter<recycler_adapter
@@ -161,7 +157,7 @@ public class recycler_adapter extends RecyclerView
             @Override
             public void doInBackground() {
                 try {
-                    Connection c = new Connection("10.0.2.2",1234);
+                    Connection c = new Connection(cont.getResources().getString(R.string.host),1234);
                     c.login(0,"");
                     c.deviceSetTier(idd, tierr);
                 } catch (IOException e) {
@@ -200,7 +196,7 @@ public class recycler_adapter extends RecyclerView
             @Override
             public void doInBackground() {
                 try {
-                    Connection c = new Connection("10.0.2.2",1234);
+                    Connection c = new Connection(cont.getResources().getString(R.string.host),1234);
                     c.login(0,"");
                     c.deviceForceOn(idd);
                 } catch (IOException e) {
@@ -218,7 +214,7 @@ public class recycler_adapter extends RecyclerView
             @Override
             public void doInBackground() {
                 try {
-                    Connection c = new Connection("10.0.2.2",1234);
+                    Connection c = new Connection(cont.getResources().getString(R.string.host),1234);
                     c.login(0,"");
                     c.deviceTurnOff(idd);
                 } catch (IOException e) {
