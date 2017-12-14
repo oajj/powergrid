@@ -5,7 +5,7 @@ package balettinakit.com.powergrid;
  */
 
 public class pictureAdapter {
-    public static int adaptPicture(String name){
+   /* public static int adaptPicture(String name){
         switch (name){
             case "fridge":
                 return R.drawable.jaakaappi;
@@ -29,5 +29,5 @@ public class pictureAdapter {
                 return R.mipmap.ic_launcher_round;
         }
 
-    }
+    }*/
 }

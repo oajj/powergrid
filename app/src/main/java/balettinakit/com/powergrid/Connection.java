@@ -1,24 +1,21 @@
 package balettinakit.com.powergrid;
 
-/**
- * Created by ollip on 12/10/2017.
- */
+import java.io.*;
+import java.net.*;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
-import java.net.UnknownHostException;
+public class Connection
+{
+    public static enum POWER_STATE {POWER_OFF, POWER_QUEUED, POWER_GRANTED_ON, POWER_FORCED_ON, POWER_UNKNOWN};
 
-public class Connection {
     private Socket socket;
-    ;
+
     private DataOutputStream outToServer;
     private BufferedReader inFromServer;
+
     private String token;
 
-    private Connection(String host, int port) throws UnknownHostException, IOException {
+    public Connection(String host, int port) throws UnknownHostException, IOException
+    {
         socket = new Socket(host, port);
         outToServer = new DataOutputStream(socket.getOutputStream());
         inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -26,18 +23,23 @@ public class Connection {
 
     /**
      * Connect to a server and create a new instance of Connection.
-     *
      * @param host IP, URL or host name of the server
      * @param port Server port
      * @return Connection object (null if connection unsuccessful)
      */
-    public static Connection ConnectionFactory(String host, int port) {
-        try {
+    public static Connection ConnectionFactory(String host, int port)
+    {
+        try
+        {
             return new Connection(host, port);
-        } catch (UnknownHostException e) {
+        }
+        catch(UnknownHostException e)
+        {
             e.printStackTrace();
             return null;
-        } catch (IOException e) {
+        }
+        catch(IOException e)
+        {
             e.printStackTrace();
             return null;
         }
@@ -45,20 +47,23 @@ public class Connection {
 
     /**
      * Login to the server to get access to a house.
-     *
-     * @param houseID  Number of the house
+     * @param houseID Number of the house
      * @param password Password
      */
-    public void login(int houseID, String password) {
-        try {
+    public void login(int houseID, String password)
+    {
+        try
+        {
             String toWrite = "Login\n" + (String.valueOf(houseID) + "\n") + ";\n";
             outToServer.write(toWrite.getBytes());
 
             token = inFromServer.readLine();
 
-            while (inFromServer.ready())
+            while(inFromServer.ready())
                 System.out.println(inFromServer.readLine());
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -67,26 +72,30 @@ public class Connection {
     /**
      * Returns a list of the names of the devices in the house you've logged in
      * to. House ID corresponds to its index in the array.
-     *
      * @return Names of the devices
      */
-    public String[] houseGetDevices() {
-        try {
+    public String[] houseGetDevices()
+    {
+        try
+        {
             String toWrite = "getAppliances\n" + token + "\n" + ";\n";
             outToServer.write(toWrite.getBytes());
 
             int num = Integer.parseInt(inFromServer.readLine());
 
             String[] ret = new String[num];
-            for (int i = 0; i < num; i++) {
+            for(int i = 0; i < num; i++)
+            {
                 ret[i] = inFromServer.readLine();
             }
 
-            while (inFromServer.ready())
+            while(inFromServer.ready())
                 System.out.println(inFromServer.readLine());
 
             return ret;
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -96,34 +105,32 @@ public class Connection {
 
     /**
      * Returns the history of power usage every minute.
-     *
      * @param start First entry to send
-     * @param end   Last entry to send (use -1 to get the currently latest entry)
+     * @param end Last entry to send (use -1 to get the currently latest entry)
      * @return Power usage history. Array index corresponds to minutes.
      */
-    public int[] houseGetHistory(int start, int end) {
-        try {
+    public int[] houseGetHistory(int start, int end)
+    {
+        try
+        {
             String toWrite = "getHistory\n" + token + "\n" + start + "\n" + end + "\n;\n";
             outToServer.write(toWrite.getBytes());
 
-            String str;
-            do {
-                str = inFromServer.readLine();
-                System.out.println(str);
-            } while (str.contains(";"));
-
-            int num = Integer.parseInt(str);
+            int num = Integer.parseInt(inFromServer.readLine());
 
             int[] ret = new int[num];
-            for (int i = 0; i < num; i++) {
+            for(int i = 0; i < num; i++)
+            {
                 ret[i] = Integer.parseInt(inFromServer.readLine());
             }
 
-            while (inFromServer.ready())
+            while(inFromServer.ready())
                 System.out.println(inFromServer.readLine());
 
             return ret;
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -133,21 +140,23 @@ public class Connection {
 
     /**
      * Returns the power state of the device.
-     *
      * @param id Device id
      * @return Power state of the device
      */
-    public POWER_STATE deviceGetPowerState(int id) {
+    public POWER_STATE deviceGetPowerState(int id)
+    {
         POWER_STATE ret = POWER_STATE.POWER_UNKNOWN;
 
-        try {
+        try
+        {
             String toWrite = "getPower\n" + token + "\n" + id + "\n;\n";
             System.out.println(toWrite);
             outToServer.write(toWrite.getBytes());
 
             String state = inFromServer.readLine();
 
-            switch (state) {
+            switch(state)
+            {
                 case "off":
                     ret = POWER_STATE.POWER_OFF;
                     break;
@@ -162,11 +171,13 @@ public class Connection {
                     break;
             }
 
-            while (inFromServer.ready())
+            while(inFromServer.ready())
                 System.out.println(inFromServer.readLine());
 
             return ret;
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -176,17 +187,23 @@ public class Connection {
 
     /**
      * Puts the device in the turn on queue.
-     *
      * @param id Device ID
      */
-    public void deviceQueue(int id) {
-        try {
+    public void deviceQueue(int id)
+    {
+        try
+        {
             String toWrite = "queue\n" + token + "\n" + id + "\n;\n";
             outToServer.write(toWrite.getBytes());
 
-            while (inFromServer.ready())
+            inFromServer.readLine();
+
+            while(inFromServer.ready())
                 System.out.println(inFromServer.readLine());
-        } catch (IOException e) {
+
+        }
+        catch (IOException e)
+        {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -194,17 +211,22 @@ public class Connection {
 
     /**
      * Forces the device on.
-     *
      * @param id Device ID
      */
-    public void deviceForceOn(int id) {
-        try {
+    public void deviceForceOn(int id)
+    {
+        try
+        {
             String toWrite = "forceOn\n" + token + "\n" + id + "\n;\n";
             outToServer.write(toWrite.getBytes());
 
-            while (inFromServer.ready())
+            inFromServer.readLine();
+
+            while(inFromServer.ready())
                 System.out.println(inFromServer.readLine());
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -212,21 +234,76 @@ public class Connection {
 
     /**
      * Turns the device off.
-     *
      * @param id Device ID
      */
-    public void deviceTurnOff(int id) {
-        try {
+    public void deviceTurnOff(int id)
+    {
+        try
+        {
             String toWrite = "turnOff\n" + token + "\n" + id + "\n;\n";
             outToServer.write(toWrite.getBytes());
 
-            while (inFromServer.ready())
+            inFromServer.readLine();
+
+            while(inFromServer.ready())
                 System.out.println(inFromServer.readLine());
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    public static enum POWER_STATE {POWER_OFF, POWER_QUEUED, POWER_GRANTED_ON, POWER_FORCED_ON, POWER_UNKNOWN}
+    /**
+     * Returns the power handling tier of the device.
+     * @param id Device ID
+     * @return Power handling tier (1 to 3), 0 if error
+     */
+    public int deviceGetTier(int id)
+    {
+        int ret = 0;
+        try
+        {
+            String toWrite = "getTier\n" + token + "\n" + id + "\n;\n";
+            outToServer.write(toWrite.getBytes());
+
+            ret = Integer.parseInt(inFromServer.readLine());
+
+            while(inFromServer.ready())
+                System.out.println(inFromServer.readLine());
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return ret;
+    }
+
+
+    /**
+     * Sets the power handling tier of the device.
+     * @param id Device ID
+     * @param tier handling tier (1 to 3)
+     */
+    public void deviceSetTier(int id, int tier)
+    {
+        try
+        {
+            String toWrite = "setTier\n" + token + "\n" + id + "\n" + tier + "\n;\n";
+            outToServer.write(toWrite.getBytes());
+
+            inFromServer.readLine();
+
+            while(inFromServer.ready())
+                System.out.println(inFromServer.readLine());
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

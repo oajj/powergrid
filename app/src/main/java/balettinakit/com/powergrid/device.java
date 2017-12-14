@@ -5,11 +5,14 @@ package balettinakit.com.powergrid;
  */
 
 public class device {
+
     private String name;
     private String state;
     private String usage;
     private String token;
     private Boolean active;
+    private int id;
+    private int tier;
 
     public Boolean getActive() {
         return active;
@@ -19,16 +22,32 @@ public class device {
         this.active = active;
     }
 
-    device(String name1, String state1, String condition1, String subject1, Boolean active1) {
-        name = name1;
-        state = state1;
-        usage = condition1;
-        token = subject1;
-        active = active1;
+    public int getId() {
+        return id;
     }
 
-    public String getToken() {
-        return token;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getTier() {
+        return tier;
+    }
+
+    public void setTier(int tier) {
+        this.tier = tier;
+    }
+
+    device(String name1, String state1, String usage, int id, int tier) {
+        this.id = id;
+        name = name1;
+        this.tier = tier;
+        state = state1;
+        this.usage = usage;
+    }
+
+    public int getToken() {
+        return id;
     }
 
     public void setToken(String token) {

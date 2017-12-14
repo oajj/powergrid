@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="140dp"
+    android:layout_height="150dp"
     android:layout_marginHorizontal="5dp"
     android:layout_marginVertical="5dp"
     android:background="@drawable/rounded_corners"
@@ -73,6 +73,26 @@
             android:text="300kw/h"
             android:textColor="@color/colorText" />
 
+        <TextView
+            android:id="@+id/tier"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/usage"
+            android:layout_toEndOf="@+id/textView3"
+            android:text="1"
+            android:textColor="@color/colorText" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignBaseline="@+id/tier"
+            android:layout_alignBottom="@+id/tier"
+            android:layout_alignParentStart="true"
+            android:text="Tier:"
+            android:textColor="@color/colorText" />
+
         <ImageButton
             android:id="@+id/menu_more"
             android:layout_width="30dp"
@@ -82,25 +102,6 @@
             android:contentDescription="More"
             android:background="#00ffffff"
             android:src="@drawable/ic_more_vert_black_24dp" />
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/textView3"
-            android:text="Active:"
-            android:textColor="@color/colorText" />
-
-        <TextView
-            android:id="@+id/active"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/textView3"
-            android:layout_toEndOf="@+id/textView3"
-            android:text="inactive"
-            android:textColor="@color/colorText" />
 
     </RelativeLayout>
 
