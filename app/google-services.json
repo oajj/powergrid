@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "710524777603",
+    "firebase_url": "https://powergrid-7f3d6.firebaseio.com",
+    "project_id": "powergrid-7f3d6",
+    "storage_bucket": "powergrid-7f3d6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710524777603:android:d8bde55d3a7a55df",
+        "android_client_info": {
+          "package_name": "balettinakit.com.powergrid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "710524777603-m1rvaj448vm4f24j5ta1ccq8p4g7h0m9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "balettinakit.com.powergrid",
+            "certificate_hash": "37585c3b69b56a392d7b834226a456076873e754"
+          }
+        },
+        {
+          "client_id": "710524777603-vr78k7d29u12kj768bicq8e32l6c4n27.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALT5hjS-XGeM3pWPH_MQsoWGXuGOMqLUw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "710524777603-vr78k7d29u12kj768bicq8e32l6c4n27.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -19,6 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -28,6 +32,8 @@ public class recycler_adapter extends RecyclerView
     private static String LOG_TAG = "jari";
     private static MyClickListener myClickListener;
     Context cont;
+    private DatabaseReference mDatabase;
+
     private ArrayList<device> mDataset;
     ArrayList<device> data = new ArrayList<>();
 
@@ -47,7 +53,7 @@ public class recycler_adapter extends RecyclerView
             cont = parent.getContext();
             DataObjectHolder dataObjectHolder = new DataObjectHolder(view);
 
-            return dataObjectHolder;
+        return dataObjectHolder;
     }
 
     @Override
@@ -199,6 +205,14 @@ public class recycler_adapter extends RecyclerView
                     Connection c = new Connection(cont.getResources().getString(R.string.host),1234);
                     c.login(0,"");
                     c.deviceForceOn(idd);
+                    if(idd==8){
+                        FirebaseApp.initializeApp(cont);
+
+                //                        mDatabase = FirebaseDatabase.getInstance().getReference();
+  //                      mDatabase.child("on").setValue(0);
+                    }
+                    Log.d("t56",Integer.toString(idd));
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
