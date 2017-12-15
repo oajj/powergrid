@@ -1,8 +1,11 @@
 package balettinakit.com.powergrid;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,39 +13,105 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class fragment_main extends Fragment {
 
     LinearLayout rl;
     View v;
+    int[] list;
+    Fragment f;
+    Fragment fragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         v=inflater.inflate(R.layout.fragment_main,container, false);
+
+        list = this.getArguments().getIntArray("data");
+
+
         rl = (LinearLayout) v.findViewById(R.id.main_layout);
         rl.addView(getCurrentUsage("30"));
         rl.addView(getUsageChart30Days());
+        f = this;
+        getActivity().setTitle("Powergrid");
+        SwipeRefreshLayout SwipeToRefshers = v.findViewById(R.id.swiper);
+        SwipeToRefshers.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        new background().execute(new fetchData() {
+                            @Override
+                            public void doInBackground() {
+                                try {
+                                    Connection c = new Connection(getResources().getString(R.string.host), 1234);
+                                    c.login(0, "");
+                                    list = c.houseGetHistory(0, -1);
+
+                                    final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                    Class fragmentClass = fragment_main.class;
+
+                                    fragment = null;
+
+                                    try {
+                                        fragment = (Fragment) fragmentClass.newInstance();
+
+
+                                        new background().execute(new fetchData() {
+                                            @Override
+                                            public void doInBackground() {
+                                                try {
+                                                    Connection c = new Connection(getResources().getString(R.string.host), 1234);
+                                                    c.login(0, "");
+                                                    Bundle args = new Bundle();
+                                                    int[] i = c.houseGetHistory(0, -1);
+                                                    args.putIntArray("data", i);
+                                                    fragment.setArguments(args);
+                                                    fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+
+                                    } catch (IllegalAccessException e) {
+                                        e.printStackTrace();
+                                    } catch (java.lang.InstantiationException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                }
+        );
+
         return v;
     }
 
     public CardView getUsageChart30Days(){
 
         LineChart chart = new LineChart(getActivity());
-        List<Entry> entries = new ArrayList<Entry>();
-        entries.add(new Entry(4, 5));
-        entries.add(new Entry(10, 6));
-        entries.add(new Entry(12, 6));
+        ArrayList<Entry> entries = new ArrayList<Entry>();
+        int y = 0;
+        for (int i : list) {
+            entries.add(new Entry(y, i));
+            y++;
+        }
+
         LineDataSet dataSet = new LineDataSet(entries, "Usage in Wh");
         dataSet.setColor(R.color.colorAccent);
         dataSet.setValueTextColor(R.color.colorAccent);
@@ -92,7 +161,6 @@ public class fragment_main extends Fragment {
         lin.addView(chart);
         chart.getLayoutParams().height = 700;
         chart.requestLayout();
-        chart.animateX(2000, Easing.EasingOption.EaseInElastic );
 
         CardView card = getDefaultCardView();
         card.addView(lin);
@@ -112,7 +180,6 @@ public class fragment_main extends Fragment {
         c.addView(currentUsage);
         return c;
     }
-
 
     public LinearLayout.LayoutParams getDefaultCardViewParams(){
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -140,4 +207,26 @@ public class fragment_main extends Fragment {
         return c;
     }
 
+    private class background extends AsyncTask<fetchData, Void, String> {
+
+        @Override
+        protected String doInBackground(fetchData... params) {
+            params[0].doInBackground();
+
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
 }

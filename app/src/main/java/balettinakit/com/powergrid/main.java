@@ -2,6 +2,7 @@ package balettinakit.com.powergrid;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -14,12 +15,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import java.io.IOException;
+
 public class main extends AppCompatActivity {
+    Class fragmentClass;
+    Fragment fragment;
         private DrawerLayout mDrawer;
         private Toolbar toolbar;
         private NavigationView nvDrawer;
-
-        // Make sure to be using android.support.v7.app.ActionBarDrawerToggle version.
+    // Make sure to be using android.support.v7.app.ActionBarDrawerToggle version.
         // The android.support.v4.app.ActionBarDrawerToggle has been deprecated.
         private ActionBarDrawerToggle drawerToggle;
 
@@ -38,17 +42,37 @@ public class main extends AppCompatActivity {
             mDrawer.addDrawerListener(drawerToggle);
             setupDrawerContent(nvDrawer);
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            final FragmentManager fragmentManager = getSupportFragmentManager();
             Class fragmentClass = fragment_main.class;
-            Fragment fragment = null;
+
+            fragment = null;
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
+
+
+                new mainFragment().execute(new fetchData() {
+                    @Override
+                    public void doInBackground() {
+                        try {
+                            Connection c = new Connection(getResources().getString(R.string.host), 1234);
+                            c.login(0, "");
+                            Bundle args = new Bundle();
+                            int[] i = c.houseGetHistory(0, -1);
+                            args.putIntArray("data", i);
+                            fragment.setArguments(args);
+                            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         }
 
         @Override
@@ -78,19 +102,46 @@ public class main extends AppCompatActivity {
         }
 
         public void selectDrawerItem(MenuItem menuItem) {
-            Fragment fragment = null;
-            Class fragmentClass;
+            final MenuItem item = menuItem;
+            fragment = null;
             Boolean doTransition = true;
             switch(menuItem.getItemId()) {
+
                 case R.id.nav_main:
-                    fragmentClass = fragment_main.class;
+                    doTransition = false;
+                    new mainFragment().execute(new fetchData() {
+                        @Override
+                        public void doInBackground() {
+                            try {
+                                fragmentClass = fragment_main.class;
+                                Connection c = new Connection(getResources().getString(R.string.host), 1234);
+                                c.login(0, "");
+                                Bundle args = new Bundle();
+                                int[] i = c.houseGetHistory(0, -1);
+                                args.putIntArray("data", i);
+                                fragment = (Fragment) fragmentClass.newInstance();
+                                fragment.setArguments(args);
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                                item.setChecked(true);
+                                // setTitle(item.getTitle());
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                     break;
                 case R.id.nav_devices:
                     fragmentClass = fragment_devices.class;
                     break;
-                case R.id.nav_settings:
+
+                /* case R.id.nav_settings:
                     fragmentClass = fragment_settings.class;
-                    break;
+                    break; */
+
                 case R.id.nav_share:
                         fragmentClass = fragment_main.class;
                         Intent sendIntent = new Intent();
@@ -138,6 +189,29 @@ public class main extends AppCompatActivity {
             drawerToggle.onConfigurationChanged(newConfig);
 
         }
+
+    private class mainFragment extends AsyncTask<fetchData, Void, String> {
+
+        @Override
+        protected String doInBackground(fetchData... params) {
+            params[0].doInBackground();
+
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
 
 
     }
