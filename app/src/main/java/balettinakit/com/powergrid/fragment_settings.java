@@ -5,4 +5,5 @@ package balettinakit.com.powergrid;
  */
 
 public class fragment_settings {
+    //empty
 }

@@ -4,4 +4,18 @@
         <string name="drawer_close">Close navigation drawer</string>
         <string name="send_to">Send to</string>
         <string name="host">192.168.100.50</string>
+        <string name="text_to_share">Hey!  I found this cool service that reduces my electricity usage and energy bills!  Check it out here [link]</string>
+        <string name="card_wip">Work in progress</string>
+        <string name="text_power_forced">Forced on</string>
+        <string name="text_power_off">Off</string>
+        <string name="text_power_on">On</string>
+        <string name="text_power_queued">Queued</string>
+        <string name="text_power_unknown">Unknown</string>
+        <string name="text_power_unkown">Unknown</string>
+        <string name="usage_default">100kwh</string>
+        <string name="text_usage_wh">Usage in Wh</string>
+        <string name="text_usage_30_d">Usage in 30 days</string>
+        <string name="text_power_usage">Power usage</string>
+        <string name="text_current_usage">Current usage:</string>
+        <string name="text_wh">/Wh</string>
 </resources>

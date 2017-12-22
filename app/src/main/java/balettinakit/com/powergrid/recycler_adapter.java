@@ -5,10 +5,8 @@ package balettinakit.com.powergrid;
  */
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,97 +17,93 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class recycler_adapter extends RecyclerView
         .Adapter<recycler_adapter
         .DataObjectHolder> {
-    private static String LOG_TAG = "jari";
-    private static MyClickListener myClickListener;
-    Context cont;
-    private DatabaseReference mDatabase;
 
+    private Context context;
     private ArrayList<device> mDataset;
-    ArrayList<device> data = new ArrayList<>();
 
-    public recycler_adapter(ArrayList<device> myDataset) {
+    recycler_adapter(ArrayList<device> myDataset) {
         mDataset = myDataset;
-    }
-
-    public void setOnItemClickListener(MyClickListener myClickListener) {
-        this.myClickListener = myClickListener;
     }
 
     @Override
     public DataObjectHolder onCreateViewHolder(ViewGroup parent,
                                                int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.card, parent, false);
-            cont = parent.getContext();
-            DataObjectHolder dataObjectHolder = new DataObjectHolder(view);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.card, parent, false);
 
-        return dataObjectHolder;
+        context = parent.getContext();
+
+        return new DataObjectHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final DataObjectHolder holder, final int position) {
-        final int pos = position;
-        final DataObjectHolder h = holder;
+    public void onBindViewHolder(final DataObjectHolder holder, int position) {
 
+        //Linting rules tell not to use position from arguments
+        //ToDo find out if argument position should be used
 
-
-        holder.name.setText(mDataset.get(position).getName());
-        holder.condition.setText(mDataset.get(position).getState());
-        holder.usage.setText(mDataset.get(position).getUsage());
+        holder.name.setText(mDataset.get(holder.getAdapterPosition()).getName());
+        holder.condition.setText(mDataset.get(holder.getAdapterPosition()).getState());
+        holder.usage.setText(mDataset.get(holder.getAdapterPosition()).getUsage());
         holder.img.setImageResource(R.drawable.ic_launcher_background);
-        holder.tier.setText(Integer.toString(mDataset.get(position).getTier()));
-        setText(holder,position);
+        holder.tier.setText(String.valueOf(mDataset.get(holder.getAdapterPosition()).getTier()));
+        setText(holder, position);
 
         holder.btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popup = new PopupMenu(cont, h.btn);
+
+                //create the popupMenu of card
+                PopupMenu popup = new PopupMenu(context, holder.btn);
                 MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.menu_dropdown, popup.getMenu());
                 popup.show();
 
+                //ToDo convert String states to enums
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
 
-                        switch (item.getItemId()){
+                        switch (item.getItemId()) {
+
                             case R.id.menu_force_active:
-                                forceActive(pos);
-                                mDataset.get(position).setState("POWER_FORCED_ON");
+                                forceActive(holder.getAdapterPosition());
+                                mDataset.get(holder.getAdapterPosition()).setState("POWER_FORCED_ON");
                                 break;
+
                             case R.id.menu_state:
-                                switchState(pos, !isActive(pos));
-                                mDataset.get(position).setState("POWER_OFF");
+                                switchState(holder.getAdapterPosition());
+                                mDataset.get(holder.getAdapterPosition()).setState("POWER_OFF");
                                 break;
+
                             case R.id.menu_stats:
-                                Toast.makeText(cont, "Work in progress", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, R.string.card_wip, Toast.LENGTH_LONG).show();
                                 break;
+
                             case R.id.menu_tier_1:
-                                setTier(pos, 1);
+                                setTier(holder.getAdapterPosition(), 1);
                                 holder.tier.setText("1");
                                 break;
+
                             case R.id.menu_tier_2:
-                                setTier(pos, 2);
+                                setTier(holder.getAdapterPosition(), 2);
                                 holder.tier.setText("2");
                                 break;
+
                             case R.id.menu_tier_3:
-                                setTier(pos, 3);
+                                setTier(holder.getAdapterPosition(), 3);
                                 holder.tier.setText("3");
                                 break;
                         }
 
-                        setText(holder,position);
+                        setText(holder, holder.getAdapterPosition());
                         return false;
                     }
                 });
@@ -117,62 +111,68 @@ public class recycler_adapter extends RecyclerView
         });
     }
 
-    public void addItem(device dataObj, int index) {
-        mDataset.add(dataObj);
-        notifyItemInserted(index);
-    }
+    /**
+     * Sets the text to condition -textView
+     * @param holder DataObjectHolder contains all the views
+     * @param id The id of the device
+     */
+    private void setText(DataObjectHolder holder, int id) {
 
-    public void deleteItem(int index) {
-        mDataset.remove(index);
-        notifyItemRemoved(index);
-    }
+        switch (getState(id)) {
 
-    public void deleteAll(int index) {
-        mDataset.clear();
-        notifyItemRemoved(index);
-    }
-
-    private void setText(DataObjectHolder holder, int id){
-        Log.d("t23",getState(id));
-        switch (getState(id)){
             case "POWER_FORCED_ON":
-                holder.condition.setText("Forced on");
+                holder.condition.setText(R.string.text_power_forced);
                 break;
+
             case "POWER_OFF":
-                holder.condition.setText("Off");
+                holder.condition.setText(R.string.text_power_off);
                 break;
+
             case "POWER_ON":
-                holder.condition.setText("On");
+                holder.condition.setText(R.string.text_power_on);
                 break;
+
             case "POWER_QUEUED":
-                holder.condition.setText("Queued");
+                holder.condition.setText(R.string.text_power_queued);
                 break;
+
             case "POWER_UNKNOWN":
-                holder.condition.setText("Unknown");
+                holder.condition.setText(R.string.text_power_unknown);
                 break;
+
             default:
-                holder.condition.setText("Unknown");
+                holder.condition.setText(R.string.text_power_unkown);
                 break;
         }
     }
 
-    public void setTier(int id, int tier){
+
+    /**
+     * sets the tier of device
+     *
+     * @param id   the id of the device which tier is wanted to set
+     * @param tier the tier to set
+     */
+    private void setTier(int id, final int tier) {
+
         final int idd = id;
-        final int tierr = tier;
         fetchData f = new fetchData() {
             @Override
             public void doInBackground() {
                 try {
-                    Connection c = new Connection(cont.getResources().getString(R.string.host),1234);
-                    c.login(0,"");
-                    c.deviceSetTier(idd, tierr);
+
+                    Connection c = new Connection(context.getResources().getString(R.string.host), 1234);
+                    c.login(0, "");
+                    c.deviceSetTier(idd, tier);
+
                 } catch (IOException e) {
                     e.printStackTrace();
+                    //ToDo add error handling
                 }
             }
         };
 
-        new LongOperation().execute(f);
+        dataFetcher.doFetch(f);
 
     }
 
@@ -182,115 +182,100 @@ public class recycler_adapter extends RecyclerView
         return mDataset.size();
     }
 
-    public String getState(int id){
-        String t ="Unknown";
-        int i=0;
-        while(i<mDataset.size()){
+    /**
+     * Returns the state of device
+     *
+     * @param id the id of the device which state is wanted to get
+     * @return returns the state of device
+     */
+    private String getState(int id) {
 
-            if(mDataset.get(i).getToken()==id){
-                t= mDataset.get(i).getState();
+        String t = "STATE_UNKNOWN";
+        int i = 0;
+
+        //Iterate through dataset
+        while (i < mDataset.size()) {
+
+            if (mDataset.get(i).getId() == id) {
+                t = mDataset.get(i).getState();
             }
+
             i++;
         }
 
         return t;
     }
 
-    public void forceActive(int id){
-        final int idd = id;
+    /**
+     * forced a device active
+     *
+     * @param id the id of the device which is wanted to force active
+     */
+    private void forceActive(final int id) {
+
         fetchData f = new fetchData() {
             @Override
             public void doInBackground() {
                 try {
-                    Connection c = new Connection(cont.getResources().getString(R.string.host),1234);
-                    c.login(0,"");
-                    c.deviceForceOn(idd);
-                    if(idd==8){
-                        FirebaseApp.initializeApp(cont);
-
-                //                        mDatabase = FirebaseDatabase.getInstance().getReference();
-  //                      mDatabase.child("on").setValue(0);
-                    }
-                    Log.d("t56",Integer.toString(idd));
-
+                    Connection c = new Connection(context.getResources().getString(R.string.host), 1234);
+                    c.login(0, "");
+                    c.deviceForceOn(id);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         };
 
-        new LongOperation().execute(f);
+        dataFetcher.doFetch(f);
     }
 
-    public void switchState(int id, Boolean on){
-        final int idd = id;
+    /**
+     * @param id the id of the device which state is wanted to switch
+     */
+    private void switchState(final int id) {
+
         fetchData f = new fetchData() {
             @Override
             public void doInBackground() {
                 try {
-                    Connection c = new Connection(cont.getResources().getString(R.string.host),1234);
-                    c.login(0,"");
-                    c.deviceTurnOff(idd);
+                    Connection c = new Connection(context.getResources().getString(R.string.host), 1234);
+                    c.login(0, "");
+                    c.deviceTurnOff(id);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         };
 
-        new LongOperation().execute(f);
+        dataFetcher.doFetch(f);
     }
-    public Boolean isActive(int id){
-        return true;
-    }
-    public enum state{
-        STATE_ON, STATE_FORCED_ON, STATE_OFF, STATE_QUEUED, STATE_UNKNOWN
-    }
-        public interface MyClickListener {
-        public void onItemClick(int position, View v);
-    }
+
+
     public static class DataObjectHolder extends RecyclerView.ViewHolder
             implements View
             .OnClickListener {
+
         TextView name, condition, usage, tier;
         ImageView img;
         ImageButton btn;
 
-        public DataObjectHolder(View itemView) {
+        DataObjectHolder(View itemView) {
             super(itemView);
+
             btn = itemView.findViewById(R.id.menu_more);
             name = itemView.findViewById(R.id.name);
             condition = itemView.findViewById(R.id.state);
             usage = itemView.findViewById(R.id.usage);
-            img= itemView.findViewById(R.id.img);
+            img = itemView.findViewById(R.id.img);
             tier = itemView.findViewById(R.id.tier);
+
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-
+            //ToDo add click handling
         }
     }
-    private class LongOperation extends AsyncTask<fetchData, Void, String> {
-
-        @Override
-        protected String doInBackground(fetchData... params) {
-            params[0].doInBackground();
-
-            return "Executed";
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-        }
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
-    }
-
 
 }

@@ -1,11 +1,15 @@
 package balettinakit.com.powergrid;
 
+/*
+* created by Ilmari Ayres
+*/
+
 import java.io.*;
 import java.net.*;
 
 public class Connection
 {
-    public static enum POWER_STATE {POWER_OFF, POWER_QUEUED, POWER_GRANTED_ON, POWER_FORCED_ON, POWER_UNKNOWN};
+    public  enum POWER_STATE {POWER_OFF, POWER_QUEUED, POWER_GRANTED_ON, POWER_FORCED_ON, POWER_UNKNOWN};
 
     private Socket socket;
 

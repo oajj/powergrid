@@ -9,57 +9,32 @@ public class device {
     private String name;
     private String state;
     private String usage;
-    private String token;
-    private Boolean active;
     private int id;
-    private int tier;
 
-    public Boolean getActive() {
-        return active;
+    public int getTier() {
+        return tier;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
+    private int tier;
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    device(String name, String state, String usage, int id, int tier) {
+        this.id = id;
+        this.name = name;
+        this.tier = tier;
+        this.state = state;
+        this.usage = usage;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getTier() {
-        return tier;
-    }
-
-    public void setTier(int tier) {
-        this.tier = tier;
-    }
-
-    device(String name1, String state1, String usage, int id, int tier) {
-        this.id = id;
-        name = name1;
-        this.tier = tier;
-        state = state1;
-        this.usage = usage;
-    }
-
-    public int getToken() {
-        return id;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getUsage() {
+     String getUsage() {
         return usage;
-    }
-
-    public void setUsage(String usage) {
-        this.usage = usage;
     }
 
     public String getName() {
