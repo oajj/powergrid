@@ -47,22 +47,19 @@ public class main extends AppCompatActivity {
             fragment = (Fragment) fragmentClass.newInstance();
 
 
-            dataFetcher.doFetch(new fetchData() {
-                @Override
-                public void doInBackground() {
-                    try {
-                        Connection c = new Connection(getResources().getString(R.string.host), 1234);
-                        c.login(0, "");
-                        Bundle args = new Bundle();
-                        int[] i = c.houseGetHistory(0, -1);
-                        args.putIntArray("data", i);
-                        fragment.setArguments(args);
-                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            dataFetcher.doFetch(() -> {
+                try {
+                    Connection c = new Connection(getResources().getString(R.string.host), 1234);
+                    c.login(0, "");
+                    Bundle args = new Bundle();
+                    int[] i = c.houseGetHistory(0, -1);
+                    args.putIntArray("data", i);
+                    fragment.setArguments(args);
+                    fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        //ToDo add error handling
-                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    //ToDo add error handling
                 }
             });
 
@@ -91,12 +88,9 @@ public class main extends AppCompatActivity {
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
                 });
     }
 
@@ -113,28 +107,28 @@ public class main extends AppCompatActivity {
             case R.id.nav_main:
                 doTransition = false;
 
-                dataFetcher.doFetch(new fetchData() {
-                    @Override
-                    public void doInBackground() {
-                        try {
-                            fragmentClass = fragment_main.class;
-                            Connection c = new Connection(getResources().getString(R.string.host), 1234);
-                            c.login(0, "");
-                            Bundle args = new Bundle();
-                            int[] i = c.houseGetHistory(0, -1);
-                            args.putIntArray("data", i);
-                            fragment = (Fragment) fragmentClass.newInstance();
-                            fragment.setArguments(args);
-                            FragmentManager fragmentManager = getSupportFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-                            menuItem.setChecked(true);
+                dataFetcher.doFetch(() -> {
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            //ToDo add error handling
-                        }
+                    try {
+                        fragmentClass = fragment_main.class;
+                        Connection c = new Connection(getResources().getString(R.string.host), 1234);
+                        c.login(0, "");
+                        Bundle args = new Bundle();
+                        int[] i = c.houseGetHistory(0, -1);
+                        args.putIntArray("data", i);
+                        fragment = (Fragment) fragmentClass.newInstance();
+                        fragment.setArguments(args);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                        menuItem.setChecked(true);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        //ToDo add error handling
                     }
                 });
+
+
                 break;
             case R.id.nav_devices:
                 fragmentClass = fragment_devices.class;

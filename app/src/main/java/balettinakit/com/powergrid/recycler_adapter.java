@@ -1,7 +1,7 @@
 package balettinakit.com.powergrid;
 
 /**
- * Created by ollip on 11/25/2017.
+ * Created by Olli Peura on 11/25/2017.
  */
 
 import android.content.Context;
@@ -9,7 +9,6 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -55,59 +54,53 @@ public class recycler_adapter extends RecyclerView
         holder.tier.setText(String.valueOf(mDataset.get(holder.getAdapterPosition()).getTier()));
         setText(holder, position);
 
-        holder.btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.btn.setOnClickListener(view -> {
 
-                //create the popupMenu of card
-                PopupMenu popup = new PopupMenu(context, holder.btn);
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.menu_dropdown, popup.getMenu());
-                popup.show();
+            //create the popupMenu of card
+            PopupMenu popup = new PopupMenu(context, holder.btn);
+            MenuInflater inflater = popup.getMenuInflater();
+            inflater.inflate(R.menu.menu_dropdown, popup.getMenu());
+            popup.show();
 
-                //ToDo convert String states to enums
+            //ToDo convert String states to enums
 
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
+            popup.setOnMenuItemClickListener(item -> {
 
-                        switch (item.getItemId()) {
+                switch (item.getItemId()) {
 
-                            case R.id.menu_force_active:
-                                forceActive(holder.getAdapterPosition());
-                                mDataset.get(holder.getAdapterPosition()).setState("POWER_FORCED_ON");
-                                break;
+                    case R.id.menu_force_active:
+                        forceActive(holder.getAdapterPosition());
+                        mDataset.get(holder.getAdapterPosition()).setState("POWER_FORCED_ON");
+                        break;
 
-                            case R.id.menu_state:
-                                switchState(holder.getAdapterPosition());
-                                mDataset.get(holder.getAdapterPosition()).setState("POWER_OFF");
-                                break;
+                    case R.id.menu_state:
+                        switchState(holder.getAdapterPosition());
+                        mDataset.get(holder.getAdapterPosition()).setState("POWER_OFF");
+                        break;
 
-                            case R.id.menu_stats:
-                                Toast.makeText(context, R.string.card_wip, Toast.LENGTH_LONG).show();
-                                break;
+                    case R.id.menu_stats:
+                        Toast.makeText(context, R.string.card_wip, Toast.LENGTH_LONG).show();
+                        break;
 
-                            case R.id.menu_tier_1:
-                                setTier(holder.getAdapterPosition(), 1);
-                                holder.tier.setText("1");
-                                break;
+                    case R.id.menu_tier_1:
+                        setTier(holder.getAdapterPosition(), 1);
+                        holder.tier.setText("1");
+                        break;
 
-                            case R.id.menu_tier_2:
-                                setTier(holder.getAdapterPosition(), 2);
-                                holder.tier.setText("2");
-                                break;
+                    case R.id.menu_tier_2:
+                        setTier(holder.getAdapterPosition(), 2);
+                        holder.tier.setText("2");
+                        break;
 
-                            case R.id.menu_tier_3:
-                                setTier(holder.getAdapterPosition(), 3);
-                                holder.tier.setText("3");
-                                break;
-                        }
+                    case R.id.menu_tier_3:
+                        setTier(holder.getAdapterPosition(), 3);
+                        holder.tier.setText("3");
+                        break;
+                }
 
-                        setText(holder, holder.getAdapterPosition());
-                        return false;
-                    }
-                });
-            }
+                setText(holder, holder.getAdapterPosition());
+                return false;
+            });
         });
     }
 
@@ -156,19 +149,16 @@ public class recycler_adapter extends RecyclerView
     private void setTier(int id, final int tier) {
 
         final int idd = id;
-        fetchData f = new fetchData() {
-            @Override
-            public void doInBackground() {
-                try {
+        fetchData f = () -> {
+            try {
 
-                    Connection c = new Connection(context.getResources().getString(R.string.host), 1234);
-                    c.login(0, "");
-                    c.deviceSetTier(idd, tier);
+                Connection c = new Connection(context.getResources().getString(R.string.host), 1234);
+                c.login(0, "");
+                c.deviceSetTier(idd, tier);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    //ToDo add error handling
-                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                //ToDo add error handling
             }
         };
 
@@ -213,16 +203,13 @@ public class recycler_adapter extends RecyclerView
      */
     private void forceActive(final int id) {
 
-        fetchData f = new fetchData() {
-            @Override
-            public void doInBackground() {
-                try {
-                    Connection c = new Connection(context.getResources().getString(R.string.host), 1234);
-                    c.login(0, "");
-                    c.deviceForceOn(id);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        fetchData f = () -> {
+            try {
+                Connection c = new Connection(context.getResources().getString(R.string.host), 1234);
+                c.login(0, "");
+                c.deviceForceOn(id);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         };
 
@@ -234,16 +221,13 @@ public class recycler_adapter extends RecyclerView
      */
     private void switchState(final int id) {
 
-        fetchData f = new fetchData() {
-            @Override
-            public void doInBackground() {
-                try {
-                    Connection c = new Connection(context.getResources().getString(R.string.host), 1234);
-                    c.login(0, "");
-                    c.deviceTurnOff(id);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        fetchData f = () -> {
+            try {
+                Connection c = new Connection(context.getResources().getString(R.string.host), 1234);
+                c.login(0, "");
+                c.deviceTurnOff(id);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         };
 

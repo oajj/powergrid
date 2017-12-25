@@ -3,7 +3,7 @@ package balettinakit.com.powergrid;
 import android.os.AsyncTask;
 
 /**
- * Created by ollip on 12/22/2017.
+ * Created by Olli Peura on 12/22/2017.
  */
 
 class dataFetcher {

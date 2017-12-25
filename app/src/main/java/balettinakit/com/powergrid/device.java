@@ -1,7 +1,7 @@
 package balettinakit.com.powergrid;
 
 /**
- * Created by ollip on 11/25/2017.
+ * Created by Olli Peura on 11/25/2017.
  */
 
 public class device {
@@ -45,11 +45,11 @@ public class device {
         this.name = name;
     }
 
-    public String getState() {
+    String getState() {
         return state;
     }
 
-    public void setState(String state) {
+    void setState(String state) {
         this.state = state;
     }
 }

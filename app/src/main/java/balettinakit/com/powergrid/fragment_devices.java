@@ -1,7 +1,6 @@
 package balettinakit.com.powergrid;
-
 /**
- * Created by ollip on 11/28/2017.
+ * Created by Olli Peura on 11/28/2017.
  */
 
 import android.os.Bundle;
@@ -31,35 +30,33 @@ public class fragment_devices extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         //get data from server
-        dataFetcher.doFetch(new fetchData() {
-            @Override
-            public void doInBackground() {
+        //java 8
+        fetchData f = () -> {
+            data = new ArrayList<>();
 
-                data = new ArrayList<>();
-
-                try {
-                    c = new Connection(getResources().getString(R.string.host), 1234);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                c.login(0, "");
-
-                int i = 0;
-
-                ArrayList<String> result = new ArrayList<>(Arrays.asList(c.houseGetDevices()));
-
-                for (String l : result) {
-                    data.add(new device(l, c.deviceGetPowerState(i).toString(), getString(R.string.usage_default), i, c.deviceGetTier(i)));
-                    i++;
-                }
-
-                recycler_adapter adapter = new recycler_adapter(data);
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setAdapter(adapter);
-
+            try {
+                c = new Connection(getResources().getString(R.string.host), 1234);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
+
+            c.login(0, "");
+
+            int i = 0;
+
+            ArrayList<String> result = new ArrayList<>(Arrays.asList(c.houseGetDevices()));
+
+
+            for (String l : result) {
+                data.add(new device(l, c.deviceGetPowerState(i).toString(), getString(R.string.usage_default), i, c.deviceGetTier(i)));
+                i++;
+            }
+
+            recycler_adapter adapter = new recycler_adapter(data);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adapter);
+        };
+       new dataFetcher().doFetch(f);
         return v;
     }
     }

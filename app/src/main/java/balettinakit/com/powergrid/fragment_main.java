@@ -56,49 +56,48 @@ public class fragment_main extends Fragment {
     }
 
     private SwipeRefreshLayout.OnRefreshListener refreshListener(){
-        return new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
+        return () -> {
+            try {
+                Connection c = new Connection(getResources().getString(R.string.host), 1234);
+                c.login(0, "");
+                list = c.houseGetHistory(0, -1);
+
+                final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Class fragmentClass = fragment_main.class;
+
+                fragment = null;
+
                 try {
-                    Connection c = new Connection(getResources().getString(R.string.host), 1234);
-                    c.login(0, "");
-                    list = c.houseGetHistory(0, -1);
 
-                    final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    Class fragmentClass = fragment_main.class;
+                    fragment = (Fragment) fragmentClass.newInstance();
 
-                    fragment = null;
+                    Bundle args = new Bundle();
+                    int[] i = c.houseGetHistory(0, -1);
+                    args.putIntArray("data", i);
+                    fragment.setArguments(args);
 
-                    try {
-
-                        fragment = (Fragment) fragmentClass.newInstance();
-
-                        Bundle args = new Bundle();
-                        int[] i = c.houseGetHistory(0, -1);
-                        args.putIntArray("data", i);
-                        fragment.setArguments(args);
-
-                        //Extremely bad implementation of updating data. Will the fixed in future update
-                        //ToDo fix bad implementation of refreshing activity
-                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                    //Extremely bad implementation of updating data. Will the fixed in future update
+                    //ToDo fix bad implementation of refreshing activity
+                    fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
 
-                    } catch (IllegalAccessException | java.lang.InstantiationException e) {
-                        e.printStackTrace();
-                    }
-
-
-                } catch (IOException e) {
+                } catch (IllegalAccessException | java.lang.InstantiationException e) {
                     e.printStackTrace();
                 }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         };
+
     }
 
     private CardView getUsageChart30Days() {
 
         ArrayList<Entry> entries = new ArrayList<>();
 
+        //Maybe forEach in future
         int x = 0;
         for (int i : list) {
             entries.add(new Entry(x, i));
@@ -163,6 +162,7 @@ public class fragment_main extends Fragment {
 
         CardView card = getDefaultCardView();
         card.addView(lin);
+
         return card;
     }
 

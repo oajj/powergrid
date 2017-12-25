@@ -1,7 +1,7 @@
 package balettinakit.com.powergrid;
 
 /*
-* created by Ilmari Ayres
+* Created by Ilmari Ayres
 */
 
 import java.io.*;
@@ -18,35 +18,11 @@ public class Connection
 
     private String token;
 
-    public Connection(String host, int port) throws UnknownHostException, IOException
+    public Connection(String host, int port) throws IOException
     {
         socket = new Socket(host, port);
         outToServer = new DataOutputStream(socket.getOutputStream());
         inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    }
-
-    /**
-     * Connect to a server and create a new instance of Connection.
-     * @param host IP, URL or host name of the server
-     * @param port Server port
-     * @return Connection object (null if connection unsuccessful)
-     */
-    public static Connection ConnectionFactory(String host, int port)
-    {
-        try
-        {
-            return new Connection(host, port);
-        }
-        catch(UnknownHostException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     /**
