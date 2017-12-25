@@ -202,7 +202,7 @@ public class fragment_main extends Fragment {
 
     public CardView getDefaultCardView() {
         CardView c = new CardView(getActivity());
-        c.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorText, null));
+        c.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
         c.setElevation(20);
         c.setLayoutParams(getDefaultCardViewParams());
         return c;

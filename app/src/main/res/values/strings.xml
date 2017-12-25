@@ -3,7 +3,7 @@
         <string name="drawer_open">Open navigation drawer</string>
         <string name="drawer_close">Close navigation drawer</string>
         <string name="send_to">Send to</string>
-        <string name="host">192.168.100.50</string>
+        <string name="host">10.0.2.2</string>
         <string name="text_to_share">Hey!  I found this cool service that reduces my electricity usage and energy bills!  Check it out here [link]</string>
         <string name="card_wip">Work in progress</string>
         <string name="text_power_forced">Forced on</string>
